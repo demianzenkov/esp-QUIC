@@ -25,7 +25,6 @@ private:
 
 public:
     SemaphoreHandle_t need_reconnect_sem;
-    SemaphoreHandle_t send_sync_sem;
     SemaphoreHandle_t quic_to_os_sync_sem;
     SemaphoreHandle_t client_connected_sem;
     SemaphoreHandle_t quic_exit_sem;

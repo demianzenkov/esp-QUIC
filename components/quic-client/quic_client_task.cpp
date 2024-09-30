@@ -10,7 +10,6 @@ static const char *TAG = "quic_client_task";
 static struct client quic_client = {};
 StackType_t * quic_stack;
 StaticTask_t quic_task_handler;
-// SemaphoreHandle_t quic_exit_sem;
 
 
 int QuicClientHandler::createTask(quic_client_params_t * quic_params_p) 
@@ -21,12 +20,6 @@ int QuicClientHandler::createTask(quic_client_params_t * quic_params_p)
     need_reconnect_sem = xSemaphoreCreateBinary();
     if (need_reconnect_sem == NULL) {
         ESP_LOGE(TAG, "Failed to create need_reconnect_sem");
-        return -1;
-    }
-
-    send_sync_sem = xSemaphoreCreateBinary();
-    if (send_sync_sem == NULL) {
-        ESP_LOGE(TAG, "Failed to create send_sync_sem");
         return -1;
     }
 
@@ -94,21 +87,12 @@ void QuicClientHandler::task(void *pvParameters)
             ESP_LOGI(TAG, "exit sem, closing connection");
             break;
         }
-
-        if (xSemaphoreTake(p_this->send_sync_sem, 0)) {
-            ESP_LOGD(TAG, "sync sem taken");
-            quic_client.stream.data = p_this->timesync_buf;
-            quic_client.stream.datalen = p_this->timesync_len;
-            quic_client.stream.nwrite = 0;
-            xSemaphoreGive(p_this->quic_to_os_sync_sem);
-        }
     }
 
     QuicClient::close(&quic_client);
     QuicClient::clean(&quic_client);
     
     vSemaphoreDelete(p_this->quic_exit_sem);
-    vSemaphoreDelete(p_this->send_sync_sem);
     vSemaphoreDelete(p_this->need_reconnect_sem);
     vSemaphoreDelete(p_this->client_connected_sem);
     vTaskDelete(NULL);
