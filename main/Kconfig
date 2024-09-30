@@ -1,0 +1,11 @@
+menu "Main configuration"
+
+
+config MEMORY_TRACE_ENABLED
+    bool "Enable heap tracing"
+    default n
+    help
+        Enable heap tracing for memory allocation and deallocation
+
+endmenu
+    

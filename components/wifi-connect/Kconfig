@@ -1,0 +1,16 @@
+menu "Default WiFi configuration"
+
+config DEFAULT_WIFI_SSID
+    string "WiFi SSID"
+    default "default_ssid"
+    help
+        Default SSID for the WiFi network.
+
+config DEFAULT_WIFI_PASSWORD
+    string "WiFi password"
+    default "default_password"
+    help
+        Default password for the WiFi network.
+
+endmenu
+    
